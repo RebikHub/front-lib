@@ -1,0 +1,21 @@
+{
+  "name": "my-framework",
+  "version": "1.0.0",
+  "description": "my-lib",
+  "author": "Rebikov Alexandr",
+  "license": "ISC",
+  "main": "main.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-auto-import": "^0.1.1",
+    "eslint-plugin-import": "^2.29.1",
+    "prettier": "3.1.1",
+    "vite": "^5.0.8"
+  }
+}
