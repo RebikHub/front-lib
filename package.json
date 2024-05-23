@@ -1,25 +1,26 @@
 {
-  "name": "my-framework",
-  "version": "1.0.0",
-  "description": "my-lib",
-  "author": "Rebikov Alexandr",
-  "license": "ISC",
-  "main": "main.js",
+  "name": "front-lib",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "standard": {
+    "parser": "@babel/eslint-parser",
+    "plugins": [ "flowtype" ]
+  },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint . --fix",
-    "prettier": "prettier --write .",
-    "standard": "standard --fix"
+    "ts-fix": "ts-standard --fix",
+    "js-fix": "standard --fix",
+    "parser": "standard --parser @babel/eslint-parser --plugin flowtype"
   },
   "devDependencies": {
-    "eslint": "^8.56.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-auto-import": "^0.1.1",
-    "eslint-plugin-import": "^2.29.1",
-    "prettier": "3.1.1",
+    "@babel/eslint-parser": "^7.24.5",
+    "eslint-plugin-flowtype": "^8.0.3",
     "standard": "^17.1.0",
-    "vite": "^5.0.8"
+    "ts-standard": "^12.0.2",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0"
   }
 }

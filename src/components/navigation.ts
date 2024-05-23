@@ -1,5 +1,5 @@
-import { Button } from './button'
 import router from '../routes'
+import { Button } from './button'
 
 export function Navigation () {
   return [

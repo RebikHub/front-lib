@@ -1,6 +1,11 @@
 import { createComponent } from '../../lib/component'
 
-export function Button ({ title, onClick }) {
+interface Props {
+  title: string
+  onClick: () => void
+}
+
+export function Button ({ title, onClick }: Props) {
   return createComponent({
     elementName: 'button',
     textContent: title,

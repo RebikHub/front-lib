@@ -1,4 +1,4 @@
-import { Router } from '../lib/routing'
+import { Router } from '../lib/router'
 import { About } from './pages/about'
 import { Home } from './pages/home'
 import { Main } from './pages/main'

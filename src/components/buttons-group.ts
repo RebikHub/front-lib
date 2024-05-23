@@ -1,10 +1,10 @@
 import { Button } from './button'
-import { decrement, increment, store } from '../store'
 import { createComponent } from '../../lib/component'
+import { decrement, increment } from '../store'
 
 export function ButtonsGroup () {
   return createComponent({
-    classNames: 'buttons',
+    className: 'buttons',
     children: [
       Button({
         title: 'Increment',
