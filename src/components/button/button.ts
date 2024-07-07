@@ -1,4 +1,4 @@
-import { createComponent } from '../../lib/component'
+import { createComponent } from '../../../lib/component'
 
 interface Props {
   title: string
@@ -7,8 +7,8 @@ interface Props {
 
 export function Button ({ title, onClick }: Props): HTMLElement {
   return createComponent({
-    elementName: 'button',
-    textContent: title,
+    tag: 'button',
+    content: title,
     events: {
       click: onClick
     }

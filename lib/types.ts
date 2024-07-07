@@ -2,7 +2,7 @@ export interface HTMLAttributesBase {
   // Общие атрибуты
   accessKey?: string
   className?: string
-  classNames?: string[]
+  classNames?: string[] | string
   contentEditable?: boolean | 'true' | 'false'
   dir?: 'ltr' | 'rtl' | 'auto'
   draggable?: boolean
@@ -131,8 +131,8 @@ type EventHandlerMap = {
 }
 
 export type ComponentOptions = {
-  elementName?: keyof HTMLElementTagNameMap
-  textContent?: string
+  tag?: keyof HTMLElementTagNameMap
+  content?: string
   children?: ChildElement[]
   events?: EventHandlerMap
 } & HTMLAttributesBase

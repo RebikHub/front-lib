@@ -1,6 +1,6 @@
 import { createComponent, initApp } from '../lib/component'
-import { Navigation } from './components/navigation'
-import { Title } from './components/title'
+import { Navigation } from './components/navigation/navigation'
+import { Title } from './components/title/title'
 import router from './routes'
 import './style.css'
 

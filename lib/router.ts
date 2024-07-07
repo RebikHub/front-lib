@@ -18,8 +18,6 @@ export class Router {
   }
 
   navigateTo (route: string): void {
-    console.log(route)
-
     if (this.routes[route] != null) {
       window.history.pushState({ route }, '', route)
       this.renderContent(route)
