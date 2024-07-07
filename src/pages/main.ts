@@ -2,57 +2,60 @@ import { createComponent } from '../../lib/component'
 import { createState } from '../../lib/state-func'
 
 interface State {
-  users: any
+  users: Array<{ name: string }> | null
   loading: boolean
+  error: string | null
 }
 
 const store = createState<State>({
   users: null,
-  loading: false
+  loading: false,
+  error: null
 })
 
 const getUsers: () => Promise<void> = async () => {
-  store.setState({ ...store.getState(), loading: true })
-  const response = await fetch('https://jsonplaceholder.typicode.com/users')
+  store.setState({ loading: true, users: null, error: null })
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/users')
+    if (!response.ok) throw new Error('Failed to fetch')
 
-  if (!response.ok) {
-    store.setState({ ...store.getState(), loading: false })
-    console.error('fetch error')
-    return
+    const data = await response.json()
+    store.setState({ users: data, loading: false, error: null })
+  } catch (error) {
+    store.setState({ loading: false, error: 'Failed to fetch users' })
+    console.error('fetch error:', error)
   }
+}
 
-  const data = await response.json()
-  console.log('data: ', data)
-
-  store.setState({ users: data, loading: false })
+const renderUsersList = (users: Array<{ name: string }> | null): DocumentFragment => {
+  const fragment = document.createDocumentFragment()
+  if (users != null) {
+    users.forEach(({ name }) => {
+      const li = createComponent({ tag: 'li', content: name })
+      fragment.appendChild(li)
+    })
+  }
+  return fragment
 }
 
 export function Main (): HTMLElement {
-  const element = createComponent({
-    tag: 'div',
-    content: 'list users'
-  })
+  const element = createComponent({ content: 'list users' })
 
   store.addObserver((state: State) => {
-    console.log(state)
-    element.textContent = state.loading ? 'Loading...' : 'Users list'
+    element.textContent = state.loading
+      ? 'Loading...'
+      : state.error != null
+        ? state.error
+        : 'Users list'
 
-    if (state.users != null) {
-      const fragment = document.createDocumentFragment()
-
-      fragment.appendChild(createComponent({
-        tag: 'ul',
-        children: [...state.users.map(({ name }: any) => createComponent({
-          tag: 'li',
-          content: name
-        }))]
-      }))
-
-      element.appendChild(fragment)
+    if (!state.loading && (state.users != null)) {
+      const usersList = renderUsersList(state.users)
+      element.innerHTML = ''
+      element.appendChild(usersList)
     }
   })
+
   return createComponent({
-    tag: 'p',
     content: 'Home page',
     children: [
       element,
