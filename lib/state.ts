@@ -1,17 +1,15 @@
-interface Observer {
-  update: (state: any, changedProperties: string[]) => void
-}
+import { IStateManager, Observer } from './types'
 
-export class StateManager {
-  private state: { [key: string]: any }
-  private readonly observers: Observer[]
+export class StateManager<T> implements IStateManager<T> {
+  state: T
+  observers: Array<Observer<T>>
 
-  constructor (initialState: { [key: string]: any } = {}) {
+  constructor (initialState: T) {
     this.state = initialState
     this.observers = []
   }
 
-  addObserver (observer: Observer): void {
+  addObserver (observer: Observer<T>): void {
     if (observer != null && typeof observer.update === 'function') {
       this.observers.push(observer)
     } else {
@@ -23,23 +21,23 @@ export class StateManager {
     this.observers.forEach(observer => observer.update(this.state, changedProperties))
   }
 
-  setState (newState: { [key: string]: any }): void {
+  setState (newState: Partial<T>): void {
     const changedProperties = Object.keys(newState)
     this.state = { ...this.state, ...newState }
     this.notifyObservers(changedProperties)
   }
 
-  getState (): { [key: string]: any } {
+  getState (): T {
     return this.state
   }
 }
 
-export class StateObserver {
-  private readonly manager: StateManager
+export class StateObserver<T> implements Observer<T> {
+  private readonly manager: IStateManager<T>
   private component: HTMLElement | null
   private observeState: string
 
-  constructor (manager: StateManager) {
+  constructor (manager: IStateManager<T>) {
     if (!(manager instanceof StateManager)) {
       throw new Error('Invalid manager. Must be an instance of StateManager.')
     }
@@ -60,9 +58,10 @@ export class StateObserver {
     }
   }
 
-  update (newState: { [key: string]: any }): void {
-    if ((this.component != null) && this.observeState != null) {
-      this.updateElementWithState(this.component, newState[this.observeState])
+  update (newState: T, _changedProperties: string[]): void {
+    if (this.component != null && this.observeState != null) {
+      const state = newState[this.observeState as keyof T]
+      this.updateElementWithState(this.component, state)
     } else {
       console.error('No component to update.')
     }
@@ -89,6 +88,3 @@ export class StateObserver {
     }
   }
 }
-
-// Подписка-обсервер на пропсы элемента-тега
-// И остальные состояния

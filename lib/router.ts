@@ -10,7 +10,7 @@ export class Router {
   }
 
   addRoute (route: string, callback: () => Node): void {
-    if (route && callback) {
+    if (route != null) {
       this.routes[route] = callback
     } else {
       console.error('Invalid route or callback')
@@ -18,7 +18,9 @@ export class Router {
   }
 
   navigateTo (route: string): void {
-    if (this.routes[route]) {
+    console.log(route)
+
+    if (this.routes[route] != null) {
       window.history.pushState({ route }, '', route)
       this.renderContent(route)
     } else {
@@ -27,7 +29,7 @@ export class Router {
   }
 
   renderContent (route: string): void {
-    if (this.routes[route] && (this.element != null)) {
+    if (this.routes[route] != null && (this.element != null)) {
       this.element.innerHTML = ''
       const content = this.routes[route]()
       if (content instanceof Node) {
@@ -43,13 +45,11 @@ export class Router {
   startRouter (): void {
     window.addEventListener('popstate', this.handlePopState)
     const initialState = window.history.state
-    const initialRoute = initialState && initialState.route ? initialState.route : '/'
-    this.renderContent(initialRoute)
+    this.renderContent(initialState?.route ?? '/')
   }
 
   handlePopState (event: PopStateEvent): void {
-    const route = event.state && event.state.route ? event.state.route : '/'
-    this.renderContent(route)
+    this.renderContent(event.state?.route ?? '/')
   }
 
   layoutElement (node: HTMLElement): HTMLElement {

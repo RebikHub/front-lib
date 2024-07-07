@@ -1,18 +1,4 @@
-// export interface Props {
-//   className?: string
-//   textContent?: string
-//   href?: string
-//   target?: '_blank' | '_self' | '_parent' | '_top'
-//   onClick?: (event: MouseEvent) => void
-// }
-
-import { HTMLAttributesBase } from './types'
-
-// export type VNode = {
-//   tag: string
-//   props: Props
-//   children: VNode[]
-// } | string
+import { ChildElement, ComponentOptions, HTMLAttributesBase } from './types'
 
 // function createElement (tag: string, props: Props = {}, ...children: VNode[]): VNode {
 //   return { tag, props, children: [...children] }
@@ -81,123 +67,65 @@ import { HTMLAttributesBase } from './types'
 //   }
 // }
 
-// function updateChildren (parent: Node, newChildren: VNode[], oldChildren: VNode[]): void {
-//   const length = Math.max(newChildren.length, oldChildren.length)
-//   for (let i = 0; i < length; i++) {
-//     updateElement(parent, newChildren[i], oldChildren[i], i)
-//   }
-// }
-
-// function changed (node1: VNode, node2: VNode): boolean {
-//   if (typeof node1 !== typeof node2) {
-//     return true
-//   }
-//   if (typeof node1 === 'string' && node1 !== node2) {
-//     return true
-//   }
-//   if (typeof node1 !== 'string' && typeof node2 !== 'string' && node1.tag !== node2.tag) {
-//     return true
-//   }
-//   return false
-// }
-
-// export function render (vnode: VNode, container: HTMLElement, virtualDOM?: VNode): void {
-//   if (virtualDOM != null) {
-//     updateElement(container, vnode, virtualDOM)
-//   } else {
-//     container.appendChild(renderElement(vnode))
-//   }
-// }
-
-// export function createComponent ({
-//   elementName = 'div',
-//   classNames = '',
-//   textContent = '',
-//   children = [],
-//   href = '',
-//   target = '_blank',
-//   onClick
-// }: {
-//   elementName?: string
-//   classNames?: string
-//   textContent?: string
-//   children?: VNode[]
-//   href?: string
-//   target?: '_blank' | '_self' | '_parent' | '_top'
-//   onClick?: (event: MouseEvent) => void
-// } = {}): VNode {
-//   const props: Props = {
-//     className: classNames,
-//     textContent,
-//     href,
-//     target,
-//     onClick
-//   }
-//   return createElement(elementName, props, ...children)
-// }
-
-// export function initApp (parentId: string, children: VNode[] = []): void {
-//   const app = document.getElementById(parentId)
-//   if (app != null) {
-//     render(createElement('div', {}, ...children), app)
-//   } else {
-//     console.error(`Element with id ${parentId} not found`)
-//   }
-// }
-
-type ChildElement = HTMLElement | HTMLElement[] | (() => HTMLElement | ChildElement | ChildElement[])
-
-type ComponentOptions = {
-  elementName?: keyof HTMLElementTagNameMap
-  textContent?: string
-  children?: ChildElement[]
-} & HTMLAttributesBase
-
 export function createComponent ({
   elementName = 'div',
   textContent = '',
   children = [],
+  events,
   ...props
 }: ComponentOptions): HTMLElement {
   const { href, target = '_blank', className } = props
   const element = document.createElement(elementName)
 
-  if (elementName === 'a' && href) {
+  if (elementName === 'a' && href != null) {
     (element as HTMLAnchorElement).href = href;
     (element as HTMLAnchorElement).target = target
   }
 
-  if (className) {
+  if (className != null) {
     element.classList.add(className)
   }
 
   Object.keys(props).forEach((key) => {
-    element.setAttribute(key, props[key] as string)
-  })
+    const typedKey = key as keyof HTMLAttributesBase
+    const value = props[typedKey]
 
-  Object.keys(props).forEach((key) => {
-    if (key.startsWith('on') && typeof props[key] === 'function') {
-      element.addEventListener(key.substring(2).toLowerCase(), props[key])
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+      element.setAttribute(key, String(value))
+    } else if (Array.isArray(value)) {
+      element.setAttribute(key, value.join(' '))
+    } else if (value !== undefined) {
+      element.setAttribute(key, String(value))
     }
   })
 
+  if (events != null) {
+    Object.keys(events).forEach((key) => {
+      const typedKey = key as keyof GlobalEventHandlersEventMap
+      const listener = events[typedKey]
+      if (listener != null) {
+        element.addEventListener(typedKey, listener)
+      }
+    })
+  }
+
   element.textContent = textContent
 
-  ;(children.length > 0) && render(children, element)
+  children.length > 0 && render(children, element)
+
+  console.log(element)
 
   return element
 }
 
-function render (childrens: ChildElement | ChildElement[], element: HTMLElement) {
+function render (childrens: ChildElement | ChildElement[], element: HTMLElement): HTMLElement | any {
+  const fragment = document.createDocumentFragment()
   if (childrens instanceof HTMLElement) {
-    return element.appendChild(childrens)
-  }
-
-  if (typeof childrens === 'function') {
-    return render(childrens(), element)
-  }
-
-  if (Array.isArray(childrens) && childrens.length > 0) {
+    fragment.appendChild(childrens)
+    element.appendChild(fragment)
+  } else if (typeof childrens === 'function') {
+    render(childrens(), element)
+  } else if (Array.isArray(childrens) && childrens.length > 0) {
     const elements: HTMLElement[] = []
     const funcs: Array<ChildElement | ChildElement[]> = []
     childrens.forEach((child) => {
@@ -215,11 +143,12 @@ function render (childrens: ChildElement | ChildElement[], element: HTMLElement)
       funcs.forEach((f) => render(f, element))
     }
 
-    return elements.forEach((el) => element.appendChild(el))
+    elements.forEach((el) => fragment.appendChild(el))
+    element.appendChild(fragment)
   }
 }
 
-export function initApp (parentId: string, children: ChildElement[] = []) {
+export function initApp (parentId: string, children: ChildElement[] = []): void {
   const app = document.getElementById(parentId)
 
   if (app instanceof HTMLElement && children.length > 0) {
@@ -228,3 +157,9 @@ export function initApp (parentId: string, children: ChildElement[] = []) {
     console.error('Parent element not found')
   }
 }
+
+// function createFragmentFromString (str) {
+//   let template = document.createElement('template')
+//   template.innerHTML = str
+//   return template.content
+// }

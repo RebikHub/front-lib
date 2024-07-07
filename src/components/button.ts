@@ -2,13 +2,15 @@ import { createComponent } from '../../lib/component'
 
 interface Props {
   title: string
-  onClick: () => void
+  onClick: (event?: Event) => void
 }
 
-export function Button ({ title, onClick }: Props) {
+export function Button ({ title, onClick }: Props): HTMLElement {
   return createComponent({
     elementName: 'button',
     textContent: title,
-    onClick
+    events: {
+      click: onClick
+    }
   })
 }

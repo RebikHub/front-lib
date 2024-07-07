@@ -2,7 +2,7 @@ import { Button } from './button'
 import { createComponent } from '../../lib/component'
 import { decrement, increment } from '../store'
 
-export function ButtonsGroup () {
+export function ButtonsGroup (): HTMLElement {
   return createComponent({
     className: 'buttons',
     children: [

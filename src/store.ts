@@ -1,10 +1,14 @@
 import { StateManager, StateObserver } from '../lib/state'
 
-export const store = new StateManager({ count: 0 })
+interface State {
+  count: number
+}
+
+export const store = new StateManager<State>({ count: 0 })
 export const observer = new StateObserver(store)
 
-export const increment = () => store.setState({ count: store.getState().count + 1 })
+export const increment = (): void => store.setState({ count: +store.getState().count + 1 })
 
-export const decrement = () => store.setState({
+export const decrement = (): void => store.setState({
   count: store.getState().count - 1
 })

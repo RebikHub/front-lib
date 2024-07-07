@@ -1,7 +1,7 @@
 import router from '../routes'
 import { Button } from './button'
 
-export function Navigation () {
+export function Navigation (): HTMLElement[] {
   return [
     Button({
       title: 'About',
