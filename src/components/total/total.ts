@@ -1,8 +1,20 @@
 import { createComponent } from '../../../lib/component'
-import { observer } from '../../store'
+import { State, store } from '../../store'
+// import { observer } from '../../store'
+
+// export function Total (): HTMLElement {
+//   return observer.observeElement(createComponent({
+//     tag: 'p'
+//   }), 'count')
+// }
 
 export function Total (): HTMLElement {
-  return observer.observeElement(createComponent({
+  const element = createComponent({
     tag: 'p'
-  }), 'count')
+  })
+  store.addObserver((state: State) => {
+    console.log(state)
+    element.textContent = `Count: ${state?.count}`
+  })
+  return element
 }
