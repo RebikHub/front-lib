@@ -1,8 +1,4 @@
-type Writable<T> = {
-  -readonly [P in keyof T]: T[P];
-}
-
-type Observer<T> = (state: T) => void
+import { Observer, Writable } from '../types'
 
 export function createState<T extends Record<string, any>> (initialState: T): {
   getState: () => T

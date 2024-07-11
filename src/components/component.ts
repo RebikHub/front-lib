@@ -1,4 +1,4 @@
-import { ChildElement, ComponentOptions, HTMLAttributesBase } from './types'
+import { ChildElement, ComponentOptions, HTMLAttributesBase } from '../types'
 
 export function createComponent ({
   tag = 'div',

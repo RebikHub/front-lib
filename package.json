@@ -1,17 +1,18 @@
 {
-  "name": "front-lib",
-  "private": true,
+  "name": "crs-arch",
   "version": "0.0.0",
-  "type": "module",
+  "description": "Components Router State",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "fix": "ts-standard --fix"
+    "build": "tsc",
+    "prepare": "npm run build"
   },
+  "keywords": ["your", "keywords"],
+  "author": "Your Name",
+  "license": "MIT",
   "devDependencies": {
     "ts-standard": "^12.0.2",
-    "typescript": "^5.2.2",
-    "vite": "^5.3.1"
+    "typescript": "^5.2.2"
   }
 }
