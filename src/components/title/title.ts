@@ -1,4 +1,4 @@
-import { createComponent } from '../../../lib/component'
+import { createComponent } from 'crs-arch'
 
 export function Title (): HTMLElement {
   return createComponent({

@@ -1,4 +1,4 @@
-import { createComponent } from '../../../lib/component'
+import { createComponent } from 'crs-arch'
 import router from '../../routes'
 import { Button } from '../button/button'
 import './navigation.css'

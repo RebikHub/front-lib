@@ -1,5 +1,4 @@
-import { createComponent } from '../../lib/component'
-import { createState } from '../../lib/state-func'
+import { createComponent, createState } from 'crs-arch'
 
 interface State {
   users: Array<{ name: string }> | null

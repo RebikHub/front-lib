@@ -1,3 +1,5 @@
+import { createComponent } from 'crs-arch'
+
 interface Props {
   title: string
   onClick: (event?: Event) => void
