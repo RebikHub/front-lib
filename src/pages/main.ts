@@ -1,13 +1,17 @@
 import { createComponent } from '../../lib/component'
-import { createState } from '../../lib/state-func'
+import { createState } from '../../lib/state'
+
+interface User {
+  name: string
+}
 
 interface State {
-  users: Array<{ name: string }> | null
+  users: User[] | null
   loading: boolean
   error: string | null
 }
 
-const store = createState<State>({
+export const store = createState<State>({
   users: null,
   loading: false,
   error: null
@@ -27,11 +31,12 @@ const getUsers: () => Promise<void> = async () => {
   }
 }
 
-const renderUsersList = (users: Array<{ name: string }> | null): DocumentFragment => {
+const renderUsersList = (users: User[] | null): DocumentFragment => {
   const fragment = document.createDocumentFragment()
   if (users != null) {
     users.forEach(({ name }) => {
-      const li = createComponent({ tag: 'li', content: name })
+      const li = document.createElement('li')
+      li.textContent = name
       fragment.appendChild(li)
     })
   }
@@ -41,35 +46,35 @@ const renderUsersList = (users: Array<{ name: string }> | null): DocumentFragmen
 export function Main (): HTMLElement {
   const element = createComponent({ content: 'list users' })
 
-  store.addObserver((state: State) => {
+  const updateView = (state: State): void => {
     element.textContent = state.loading
       ? 'Loading...'
       : state.error != null
         ? state.error
         : 'Users list'
 
-    if (!state.loading && (state.users != null)) {
+    if (!state.loading && state.users != null) {
       const usersList = renderUsersList(state.users)
       element.innerHTML = ''
       element.appendChild(usersList)
     }
-  })
+  }
+
+  store.addObserver(updateView)
+  updateView(store.getState()) // Первоначальный рендер
 
   return createComponent({
     content: 'Home page',
-    children: [
-      element,
-      createComponent({
-        tag: 'button',
-        content: 'Get users',
-        events: {
-          click: () => {
-            getUsers().catch((error) => {
-              console.error(error)
-            })
-          }
+    children: [element, createComponent({
+      tag: 'button',
+      content: 'Get users',
+      events: {
+        click: () => {
+          getUsers().catch((error) => {
+            console.error(error)
+          })
         }
-      })
-    ]
+      }
+    })]
   })
 }

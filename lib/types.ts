@@ -1,145 +1,4 @@
-export interface HTMLAttributesBase {
-  // Общие атрибуты
-  accessKey?: string
-  className?: string
-  classNames?: string[] | string
-  contentEditable?: boolean | 'true' | 'false'
-  dir?: 'ltr' | 'rtl' | 'auto'
-  draggable?: boolean
-  hidden?: boolean
-  id?: string
-  lang?: string
-  spellcheck?: boolean
-  style?: string | CSSStyleDeclaration
-  tabIndex?: number
-  title?: string
-  // Specific
-
-  // FormAttributes
-  action?: string
-  method?: 'get' | 'post'
-  autoComplete?: 'on' | 'off'
-  encType?: string
-  noValidate?: boolean
-
-  // Для элемента <label>
-  htmlFor?: string
-
-  // Для элемента <div>
-  role?: 'button' | 'tabpanel' | 'presentation' | 'none'
-  ariaLabel?: string
-  ariaHidden?: boolean
-  ariaExpanded?: boolean
-
-  // Для элемента <input>
-  typeText?: 'text' | 'password' | 'number' | 'checkbox' | 'radio' | 'submit' | 'reset' | 'file' | 'button' | 'date' | 'email' | 'url' | 'tel' | 'search' | 'color'
-  value?: string | number
-  checked?: boolean
-  disabled?: boolean
-  readOnly?: boolean
-  autoFocus?: boolean
-
-  // Для элемента <a>
-  href?: string
-  target?: '_blank' | '_self' | '_parent' | '_top'
-  download?: string
-  rel?: string
-
-  // Для элемента <button>
-  typeButton?: 'button' | 'submit' | 'reset'
-
-  // Для элемента <img>
-  src?: string
-  alt?: string
-  width?: number
-  height?: number
-  loading?: 'auto' | 'lazy' | 'eager'
-
-  // События
-  // onAbort?: (event: Event) => void
-  // onAnimationCancel?: (event: AnimationEvent) => void
-  // onAnimationEnd?: (event: AnimationEvent) => void
-  // onAnimationIteration?: (event: AnimationEvent) => void
-  // onAnimationStart?: (event: AnimationEvent) => void
-  // onBlur?: (event: FocusEvent) => void
-  // onCanPlay?: (event: Event) => void
-  // onCanPlayThrough?: (event: Event) => void
-  // onChange?: (event: Event) => void
-  // onClick?: (event: MouseEvent) => void
-  // // | EventListenerOrEventListenerObject
-  // onContextMenu?: (event: MouseEvent) => void
-  // onCopy?: (event: ClipboardEvent) => void
-  // onCut?: (event: ClipboardEvent) => void
-  // onDoubleClick?: (event: MouseEvent) => void
-  // onDrag?: (event: DragEvent) => void
-  // onDragEnd?: (event: DragEvent) => void
-  // onDragEnter?: (event: DragEvent) => void
-  // onDragExit?: (event: DragEvent) => void
-  // onDragLeave?: (event: DragEvent) => void
-  // onDragOver?: (event: DragEvent) => void
-  // onDragStart?: (event: DragEvent) => void
-  // onDrop?: (event: DragEvent) => void
-  // onDurationChange?: (event: Event) => void
-  // onEmptied?: (event: Event) => void
-  // onEnded?: (event: Event) => void
-  // onError?: (event: Event) => void
-  // onFocus?: (event: FocusEvent) => void
-  // onInput?: (event: Event) => void
-  // onInvalid?: (event: Event) => void
-  // onKeyDown?: (event: KeyboardEvent) => void
-  // onKeyPress?: (event: KeyboardEvent) => void
-  // onKeyUp?: (event: KeyboardEvent) => void
-  // onLoad?: (event: Event) => void
-  // onLoadStart?: (event: Event) => void
-  // onLoadedData?: (event: Event) => void
-  // onLoadedMetadata?: (event: Event) => void
-  // onMouseDown?: (event: MouseEvent) => void
-  // onMouseEnter?: (event: MouseEvent) => void
-  // onMouseLeave?: (event: MouseEvent) => void
-  // onMouseMove?: (event: MouseEvent) => void
-  // onMouseOut?: (event: MouseEvent) => void
-  // onMouseOver?: (event: MouseEvent) => void
-  // onMouseUp?: (event: MouseEvent) => void
-  // onPaste?: (event: ClipboardEvent) => void
-  // onPause?: (event: Event) => void
-  // onPlay?: (event: Event) => void
-  // onPlaying?: (event: Event) => void
-  // onProgress?: (event: ProgressEvent) => void
-  // onRateChange?: (event: Event) => void
-  // onReset?: (event: Event) => void
-  // onScroll?: (event: Event) => void
-  // onSeeked?: (event: Event) => void
-  // onSeeking?: (event: Event) => void
-  // onStalled?: (event: Event) => void
-  // onSubmit?: (event: Event) => void
-  // onSuspend?: (event: Event) => void
-  // onTimeUpdate?: (event: Event) => void
-  // onToggle?: (event: Event) => void
-  // onTransitionCancel?: (event: TransitionEvent) => void
-  // onTransitionEnd?: (event: TransitionEvent) => void
-  // onTransitionRun?: (event: TransitionEvent) => void
-  // onTransitionStart?: (event: TransitionEvent) => void
-  // onVolumeChange?: (event: Event) => void
-  // onWaiting?: (event: Event) => void
-  // onWheel?: (event: WheelEvent) => void
-}
-
-export type ChildElement = HTMLElement | HTMLElement[] | (() => HTMLElement | ChildElement | ChildElement[])
-
-type EventHandlerMap = {
-  [K in keyof GlobalEventHandlersEventMap]?: (event?: Event) => void;
-}
-
-export type ComponentOptions = {
-  tag?: keyof HTMLElementTagNameMap
-  content?: string
-  children?: ChildElement[]
-  events?: EventHandlerMap
-} & HTMLAttributesBase
-
-export interface Observer<T> {
-  update: (state: T, changedProperties: string[]) => void
-}
+export type ChildElement = HTMLElement | HTMLElement[] | (() => HTMLElement | ChildElement | ChildElement[]) | null
 
 export interface IStateManager<T> {
   state: T
@@ -148,4 +7,194 @@ export interface IStateManager<T> {
   notifyObservers: (changedProperties: string[]) => void
   setState: (newState: Partial<T>) => void
   getState: () => T
+}
+
+export type Writable<T> = {
+  -readonly [P in keyof T]: T[P];
+}
+
+export type Observer<T> = (state: T) => void
+
+export type ComponentOptions<T extends keyof HTMLElementTagNameMap> = {
+  tag?: T
+  content?: string
+  children?: ChildElement[]
+  events?: { [key in keyof GlobalEventHandlersEventMap]?: EventListener }
+} & (T extends 'a' ? AnchorAttributes :
+  T extends 'img' ? ImageAttributes :
+    T extends 'input' ? InputAttributes :
+      T extends 'form' ? FormAttributes :
+        T extends 'button' ? ButtonAttributes :
+          T extends 'label' ? LabelAttributes :
+            T extends 'div' ? DivAttributes :
+              T extends 'video' ? VideoAttributes :
+                T extends 'audio' ? AudioAttributes :
+                  T extends 'select' ? SelectAttributes :
+                    T extends 'option' ? OptionAttributes :
+                      T extends 'textarea' ? TextareaAttributes :
+                        HTMLAttributesBase)
+
+export type HTMLAllAttributes = (
+  | AnchorAttributes
+  | ImageAttributes
+  | InputAttributes
+  | FormAttributes
+  | ButtonAttributes
+  | LabelAttributes
+  | DivAttributes
+  | VideoAttributes
+  | AudioAttributes
+  | SelectAttributes
+  | OptionAttributes
+  | TextareaAttributes
+)
+
+// Базовый интерфейс для общих атрибутов
+export interface HTMLAttributesBase {
+  class?: string
+  classes?: string[]
+  id?: string
+  style?: string
+  title?: string
+  lang?: string
+  dir?: string
+  hidden?: boolean
+  tabindex?: number
+  accesskey?: string
+  contenteditable?: boolean
+  draggable?: boolean
+  spellcheck?: boolean
+}
+
+// Интерфейс для тега <a> (гиперссылка)
+export interface AnchorAttributes extends HTMLAttributesBase {
+  href?: string
+  target?: '_blank' | '_self' | '_parent' | '_top'
+  download?: string
+  rel?: string
+  type?: string
+}
+
+// Интерфейс для тега <img> (изображение)
+export interface ImageAttributes extends HTMLAttributesBase {
+  src?: string
+  alt?: string
+  width?: number
+  height?: number
+  loading?: 'lazy' | 'eager'
+}
+
+// Интерфейс для тега <input> (поле ввода)
+export interface InputAttributes extends HTMLAttributesBase {
+  type?: 'text' | 'password' | 'number' | 'checkbox' | 'radio' | 'submit' | 'reset' | 'file' | 'button' | 'date' | 'email' | 'url' | 'tel' | 'search' | 'color'
+  name?: string
+  value?: string | number
+  placeholder?: string
+  required?: boolean
+  disabled?: boolean
+  readonly?: boolean
+  checked?: boolean
+  min?: string | number
+  max?: string | number
+  step?: string | number
+  pattern?: string
+  autocomplete?: string
+  autofocus?: boolean
+  multiple?: boolean
+  size?: number
+  accept?: string
+  capture?: string
+}
+
+// Интерфейс для тега <form> (форма)
+export interface FormAttributes extends HTMLAttributesBase {
+  action?: string
+  method?: 'get' | 'post'
+  enctype?: 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain'
+  novalidate?: boolean
+}
+
+// Интерфейс для тега <button> (кнопка)
+export interface ButtonAttributes extends HTMLAttributesBase {
+  type?: 'button' | 'submit' | 'reset'
+  disabled?: boolean
+  autofocus?: boolean
+  form?: string
+  formaction?: string
+  formenctype?: string
+  formmethod?: string
+  formnovalidate?: boolean
+  formtarget?: string
+  name?: string
+  value?: string
+}
+
+// Интерфейс для тега <label> (метка)
+export interface LabelAttributes extends HTMLAttributesBase {
+  for?: string
+}
+
+// Интерфейс для тега <div> (блочный контейнер)
+export interface DivAttributes extends HTMLAttributesBase {
+  role?: 'button' | 'tabpanel' | 'presentation' | 'none'
+  ariaLabel?: string
+  ariaHidden?: boolean
+  ariaExpanded?: boolean
+}
+
+// Интерфейс для тега <video> (видео)
+export interface VideoAttributes extends HTMLAttributesBase {
+  src?: string
+  autoplay?: boolean
+  controls?: boolean
+  loop?: boolean
+  muted?: boolean
+  poster?: string
+  preload?: 'none' | 'metadata' | 'auto'
+  width?: number
+  height?: number
+}
+
+// Интерфейс для тега <audio> (аудио)
+export interface AudioAttributes extends HTMLAttributesBase {
+  src?: string
+  autoplay?: boolean
+  controls?: boolean
+  loop?: boolean
+  muted?: boolean
+  preload?: 'none' | 'metadata' | 'auto'
+}
+
+// Интерфейс для тега <select> (выпадающий список)
+export interface SelectAttributes extends HTMLAttributesBase {
+  name?: string
+  multiple?: boolean
+  size?: number
+  required?: boolean
+  disabled?: boolean
+  autofocus?: boolean
+  form?: string
+}
+
+// Интерфейс для тега <option> (элемент выпадающего списка)
+export interface OptionAttributes extends HTMLAttributesBase {
+  value?: string
+  label?: string
+  selected?: boolean
+  disabled?: boolean
+}
+
+// Интерфейс для тега <textarea> (многострочное текстовое поле)
+export interface TextareaAttributes extends HTMLAttributesBase {
+  name?: string
+  rows?: number
+  cols?: number
+  placeholder?: string
+  required?: boolean
+  disabled?: boolean
+  readonly?: boolean
+  autofocus?: boolean
+  maxlength?: number
+  minlength?: number
+  wrap?: 'soft' | 'hard'
 }

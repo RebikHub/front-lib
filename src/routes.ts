@@ -1,9 +1,10 @@
-import { Router } from '../lib/router'
+
+import { createRouter } from '../lib/router'
 import { About } from './pages/about'
 import { Home } from './pages/home'
 import { Main } from './pages/main'
 
-const router = new Router()
+const router = createRouter()
 
 router.addRoute('/about', About)
 

@@ -6,7 +6,7 @@ import './navigation.css'
 export function Navigation (): HTMLElement {
   return createComponent({
     tag: 'header',
-    classNames: 'navigation',
+    class: 'navigation',
     children: [
       Button({
         title: 'About',
