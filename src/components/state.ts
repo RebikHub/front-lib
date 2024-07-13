@@ -8,7 +8,7 @@ export function createState<T extends Record<string, any>> (initialState: T): {
 } {
   const state = new Proxy(initialState as Writable<T>, {
     set: (target, prop: string | symbol, value) => {
-      if (typeof prop === 'string' && prop in target && target[prop as keyof T] !== value) {
+      if (typeof prop === 'string' && target[prop as keyof T] !== value) {
         target[prop as keyof T] = value
         notifyObservers()
       }
@@ -23,12 +23,16 @@ export function createState<T extends Record<string, any>> (initialState: T): {
   }
 
   function setState (newState: Partial<T>): void {
+    let hasChanged = false
     for (const key in newState) {
       if (key in newState && newState[key] !== state[key as keyof T]) {
         state[key as keyof T] = newState[key] as T[keyof T]
+        hasChanged = true
       }
     }
-    notifyObservers()
+    if (hasChanged) {
+      notifyObservers()
+    }
   }
 
   function addObserver (observer: Observer<T>): void {
