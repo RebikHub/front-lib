@@ -1,4 +1,4 @@
-import { ChildElement, ComponentOptions, HTMLAllAttributes } from './types'
+import { ChildElement, ComponentOptions, HTMLAllAttributes } from '../types'
 
 export function createComponent<T extends keyof HTMLElementTagNameMap> ({
   tag = 'div' as T,
@@ -62,43 +62,46 @@ function setElementEvents (element: HTMLElement, events: { [key: string]: EventL
   }
 }
 
-function renderInChunks (
+function renderInChunks(
   children: ChildElement | ChildElement[],
   element: HTMLElement,
   chunkSize: number = 50
 ): void {
-  const fragment = document.createDocumentFragment()
-  const queue: ChildElement[] = Array.isArray(children) ? children : [children]
+  const fragment = document.createDocumentFragment();
+  const queue: ChildElement[] = [];
 
-  function processChunk (): void {
-    const chunk = queue.splice(0, chunkSize)
-    chunk.forEach(child => appendChildToFragment(child, fragment))
+  function enqueue(items: ChildElement | ChildElement[]): void {
+    if (Array.isArray(items)) {
+      items.forEach(item => enqueue(item));
+    } else if (items instanceof HTMLElement) {
+      queue.push(items);
+    } else if (typeof items === 'function') {
+      enqueue(items());
+    }
+  }
+
+  enqueue(children);
+
+  function processChunk(): void {
+    const chunk = queue.splice(0, chunkSize);
+    chunk.forEach(child => {
+      if (child instanceof HTMLElement) {
+        fragment.appendChild(child);
+      }
+    });
 
     if (queue.length > 0) {
-      requestAnimationFrame(processChunk)
+      requestAnimationFrame(processChunk);
     } else {
-      element.appendChild(fragment)
+      element.appendChild(fragment);
     }
   }
 
-  requestAnimationFrame(processChunk)
+  requestAnimationFrame(processChunk);
 }
 
-function render (children: ChildElement | ChildElement[], element: HTMLElement): void {
-  renderInChunks(children, element)
-}
-
-function appendChildToFragment (child: ChildElement, fragment: DocumentFragment): void {
-  if (child instanceof HTMLElement) {
-    fragment.appendChild(child)
-  } else if (typeof child === 'function') {
-    const result = child()
-    if (Array.isArray(result)) {
-      result.forEach(item => appendChildToFragment(item, fragment))
-    } else {
-      appendChildToFragment(result, fragment)
-    }
-  }
+function render(children: ChildElement | ChildElement[], element: HTMLElement): void {
+  renderInChunks(children, element);
 }
 
 export function initApp (parentId: string, children: ChildElement[] = []): void {

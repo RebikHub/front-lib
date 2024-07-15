@@ -7,13 +7,11 @@ export function createRouter (): {
   layoutElement: (node: HTMLElement) => HTMLElement
   destroy: () => void
 } {
-  const routes: {
-    [route: string]: () => Node
-  } = {}
+  const routes: { [route: string]: () => Node } = {}
   let element: HTMLElement | null = null
 
   function addRoute (route: string, callback: () => Node): void {
-    if (route != null) {
+    if (route != null && typeof callback === 'function') {
       routes[route] = callback
     } else {
       console.error('Invalid route or callback')
@@ -45,12 +43,12 @@ export function createRouter (): {
 
   function startRouter (): void {
     window.addEventListener('popstate', handlePopState)
-    const initialState = window.history.state
-    renderContent(initialState?.route ?? '/')
+    renderContent(window.location.pathname)
   }
 
   function handlePopState (event: PopStateEvent): void {
-    renderContent(event.state?.route ?? '/')
+    const route = event.state?.route !== undefined && event.state?.route !== null ? event.state.route : window.location.pathname
+    renderContent(route)
   }
 
   function layoutElement (node: HTMLElement): HTMLElement {
@@ -60,6 +58,7 @@ export function createRouter (): {
 
   function destroy (): void {
     window.removeEventListener('popstate', handlePopState)
+    element = null
   }
 
   return {
