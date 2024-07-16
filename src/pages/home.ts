@@ -1,4 +1,4 @@
-import { createComponent } from 'crs-arch'
+import { createComponent } from '../../lib'
 import { ButtonsGroup } from '../components/buttons-group/buttons-group'
 import { Total } from '../components/total/total'
 

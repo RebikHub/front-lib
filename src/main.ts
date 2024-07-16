@@ -1,18 +1,14 @@
-import { createComponent, initApp } from 'crs-arch'
+import { initApp } from '@lib/index'
 import { Navigation } from './components/navigation/navigation'
 import { Title } from './components/title/title'
-import router from './routes'
 import './style.css'
-import { store } from './store'
+import { start } from './routes'
+import { RootLayout } from './layout/root-layout'
 
 initApp('app', [
   Navigation,
   Title,
-  router.layoutElement(createComponent({}))
+  RootLayout
 ])
 
-router.startRouter()
-
-store.addObserver((state) => {
-  console.log(state)
-})
+start()

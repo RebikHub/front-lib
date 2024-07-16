@@ -1,14 +1,14 @@
-import { createRouter } from 'crs-arch'
+import { createRouter } from '../lib'
 import { About } from './pages/about'
 import { Home } from './pages/home'
-import { Main } from './pages/main'
+import { Main } from './pages/main/view/main'
 
-const router = createRouter()
+export const { add, layout, navigate, start } = createRouter()
 
-router.addRoute('/about', About)
+add('/about', About)
 
-router.addRoute('/main', Main)
+add('/main', Main)
 
-router.addRoute('/', Home)
+add('/', Home)
 
-export default router
+// start()

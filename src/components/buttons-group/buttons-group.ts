@@ -1,11 +1,11 @@
 import { Button } from '../button/button'
 import { decrement, increment } from '../../store'
 import './buttons-group.css'
-import { createComponent } from 'crs-arch'
+import { createComponent } from '../../../lib'
 
 export function ButtonsGroup (): HTMLElement {
   return createComponent({
-    classNames: ['buttons-group', 'buttons'],
+    classes: ['buttons-group', 'buttons'],
     children: [
       Button({
         title: 'Increment',

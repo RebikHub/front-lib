@@ -1,4 +1,4 @@
-import { createComponent } from 'crs-arch'
+import { createComponent } from '../../../lib'
 
 interface Props {
   title: string

@@ -1,15 +1,23 @@
-import { createComponent } from 'crs-arch'
-import { State, store } from '../../store'
+import { createComponent } from '../../../lib'
+import { add } from '../../store'
 
 export function Total (): HTMLElement {
-  const element = createComponent({
+  let element = createComponent({
     tag: 'p'
   })
-  console.log('render: Total')
 
-  store.addObserver((state: State) => {
-    console.log(state)
-    element.textContent = `Count: ${state?.count}`
+  add(({ count }) => {
+    console.log('Total: ', count)
+    if (count > 0 && element != null) {
+      element.textContent = `Count: ${count}`
+    } else if (count > 0 && element == null) {
+      element = createComponent({
+        tag: 'p'
+      })
+    } else {
+      element.remove()
+    }
   })
+
   return element
 }

@@ -1,24 +1,24 @@
-import { createComponent } from 'crs-arch'
-import router from '../../routes'
+import { createComponent } from '@lib/index'
 import { Button } from '../button/button'
 import './navigation.css'
+import { navigate } from '@src/routes'
 
 export function Navigation (): HTMLElement {
   return createComponent({
     tag: 'header',
-    classNames: 'navigation',
+    class: 'navigation',
     children: [
       Button({
         title: 'About',
-        onClick: () => router.navigateTo('/about')
+        onClick: () => navigate('/about')
       }),
       Button({
         title: 'Main',
-        onClick: () => router.navigateTo('/main')
+        onClick: () => navigate('/main')
       }),
       Button({
         title: 'Home',
-        onClick: () => router.navigateTo('/')
+        onClick: () => navigate('/')
       })
     ]
   })
