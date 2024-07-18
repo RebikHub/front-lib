@@ -1,16 +1,16 @@
 export function createRouter (): {
-  addRoute: (route: string, callback: () => Node) => void
-  navigateTo: (route: string) => void
-  renderContent: (route: string) => void
-  startRouter: () => void
+  add: (route: string, callback: () => Node) => void
+  navigate: (route: string) => void
+  render: (route: string) => void
+  start: () => void
   handlePopState: (event: PopStateEvent) => void
-  layoutElement: (node: HTMLElement) => HTMLElement
+  layout: (node: HTMLElement) => HTMLElement
   destroy: () => void
 } {
   const routes: { [route: string]: () => Node } = {}
   let element: HTMLElement | null = null
 
-  function addRoute (route: string, callback: () => Node): void {
+  function add (route: string, callback: () => Node): void {
     if (route != null && typeof callback === 'function') {
       routes[route] = callback
     } else {
@@ -18,16 +18,16 @@ export function createRouter (): {
     }
   }
 
-  function navigateTo (route: string): void {
+  function navigate (route: string): void {
     if (routes[route] != null) {
       window.history.pushState({ route }, '', route)
-      renderContent(route)
+      render(route)
     } else {
       console.error('Route not found')
     }
   }
 
-  function renderContent (route: string): void {
+  function render (route: string): void {
     if (routes[route] != null && (element != null)) {
       element.innerHTML = ''
       const content = routes[route]()
@@ -41,17 +41,17 @@ export function createRouter (): {
     }
   }
 
-  function startRouter (): void {
+  function start (): void {
     window.addEventListener('popstate', handlePopState)
-    renderContent(window.location.pathname)
+    render(window.location.pathname)
   }
 
   function handlePopState (event: PopStateEvent): void {
     const route = event.state?.route !== undefined && event.state?.route !== null ? event.state.route : window.location.pathname
-    renderContent(route)
+    render(route)
   }
 
-  function layoutElement (node: HTMLElement): HTMLElement {
+  function layout (node: HTMLElement): HTMLElement {
     element = node
     return node
   }
@@ -62,12 +62,12 @@ export function createRouter (): {
   }
 
   return {
-    addRoute,
-    navigateTo,
-    renderContent,
-    startRouter,
+    add,
+    navigate,
+    render,
+    start,
     handlePopState,
-    layoutElement,
+    layout,
     destroy
   }
 }
