@@ -1,23 +1,20 @@
 import { createComponent } from '../../../lib'
-import { add } from '../../store'
+import { add, state } from '../../store'
+import { Summ } from '../summ/Summ'
 
 export function Total (): HTMLElement {
-  let element = createComponent({
-    tag: 'p'
+  const element = createComponent({
+    tag: 'p',
+    content: `Count: ${state.count}`
   })
 
-  add(({ count }) => {
-    console.log('Total: ', count)
-    if (count > 0 && element != null) {
+  add('Total', ({ count }) => {
+    if (element != null) {
       element.textContent = `Count: ${count}`
-    } else if (count > 0 && element == null) {
-      element = createComponent({
-        tag: 'p'
-      })
-    } else {
-      element.remove()
     }
   })
 
-  return element
+  return createComponent({
+    children: [element, Summ]
+  })
 }

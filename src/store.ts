@@ -4,7 +4,7 @@ export interface State {
   count: number
 }
 
-export const { set, state, add } = createState<State>({ count: 0 })
+export const { set, state, add, remove } = createState<State>({ count: 0 })
 
 export const increment = (): void => set({ count: state.count - 1 })
 

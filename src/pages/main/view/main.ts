@@ -6,7 +6,7 @@ import { UsersList } from './components/users-list'
 export function Main (): HTMLElement {
   const element = createComponent({ content: 'list users' })
 
-  add((state: StateMain) => {
+  add('Main', (state: StateMain) => {
     element.textContent = state.loading
       ? 'Loading...'
       : state.error != null

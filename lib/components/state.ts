@@ -3,21 +3,20 @@ import { Observer, Writable } from '../types'
 export function createState<T extends Record<string, any>> (initialState: T): {
   get: () => T
   set: (newState: Partial<T>) => void
-  add: (observer: Observer<T>) => void
-  remove: (observer: Observer<T>) => void
+  add: (name: string, observer: Observer<T>) => void
+  remove: (name: string) => void
   state: Writable<T>
 } {
   const state = new Proxy(initialState as Writable<T>, {
     set: (target, prop: string | symbol, value) => {
       if (typeof prop === 'string' && target[prop as keyof T] !== value) {
         target[prop as keyof T] = value
-        // notifyObservers()
       }
       return true
     }
   })
 
-  const observers: Set<Observer<T>> = new Set()
+  const observers: Map<string, Observer<T>> = new Map()
 
   function get (): T {
     return state as T
@@ -36,16 +35,18 @@ export function createState<T extends Record<string, any>> (initialState: T): {
     }
   }
 
-  function add (observer: Observer<T>): void {
-    observers.add(observer)
+  function add (name: string, observer: Observer<T>): void {
+    observers.set(name, observer)
   }
 
-  function remove (observer: Observer<T>): void {
-    observers.delete(observer)
+  function remove (name: string): void {
+    observers.delete(name)
   }
 
   function notifyObservers (): void {
     observers.forEach(observer => observer(state as T))
+
+    console.log(observers)
   }
 
   return {
