@@ -210,10 +210,6 @@ Initializes the application by rendering the provided components into the specif
 
 Creates a router instance with methods to add routes, define layout, navigate, and start the router.
 
-## Contributing
-
-Contributions are welcome! Please read the [contributing guidelines](CONTRIBUTING.md) to get started.
-
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
