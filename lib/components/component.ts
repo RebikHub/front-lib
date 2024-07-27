@@ -1,4 +1,5 @@
-import { ChildElement, ComponentOptions, HTMLAllAttributes } from '../types'
+import { generateUUID } from '@lib/utils'
+import { ChildElement, ComponentOptions, HTMLAllAttributes, ObserveProps } from '../types'
 
 export function createComponent<T extends keyof HTMLElementTagNameMap> ({
   tag = 'div' as T,
@@ -60,6 +61,61 @@ function setElementEvents (element: HTMLElement, events: { [key: string]: EventL
       }
     })
   }
+}
+
+export function observe<S, T extends keyof HTMLElementTagNameMap> ({
+  store,
+  props,
+  render
+}: ObserveProps<S, T>): HTMLElement {
+  const element = createComponent(props)
+
+  const uuid = `${element.localName}-${generateUUID()}`
+
+  store.add(uuid, (state) => {
+    if (typeof render !== 'function') {
+      console.error('Render is not a function:', render)
+
+      return
+    }
+
+    const prop = render(state)
+
+    update(element, prop)
+  })
+
+  return element
+}
+
+export function update<T extends keyof HTMLElementTagNameMap> (element: HTMLElement, {
+  tag = 'div' as T,
+  content = '',
+  children = [],
+  events,
+  ...props
+}: ComponentOptions<T>
+): HTMLElement {
+  if (props.class != null) {
+    setElementClasses(element, { class: props.class })
+  }
+
+  if (props.classes != null) {
+    setElementClasses(element, { classes: props.classes })
+  }
+
+  if (content != null) {
+    element.textContent = content
+  }
+
+  if (events != null) {
+    setElementEvents(element, events)
+  }
+
+  if (props != null) {
+    setElementAttributes(element, props)
+  }
+
+  return element
 }
 
 function renderInChunks (

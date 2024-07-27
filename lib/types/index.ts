@@ -15,6 +15,20 @@ export type Writable<T> = {
 
 export type Observer<T> = (state: T) => void
 
+export interface StateReturn<T> {
+  get: () => T
+  set: (newState: Partial<T>) => void
+  add: (name: string, observer: Observer<T>) => void
+  remove: (name: string) => void
+  state: Writable<T>
+}
+
+export interface ObserveProps<S, T extends keyof HTMLElementTagNameMap> {
+  store: StateReturn<S>
+  props: ComponentOptions<T>
+  render: (state: S) => ComponentOptions<T>
+}
+
 export type ComponentOptions<T extends keyof HTMLElementTagNameMap> = {
   tag?: T
   content?: string

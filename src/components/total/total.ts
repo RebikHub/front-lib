@@ -8,10 +8,22 @@ export function Total (): HTMLElement {
     content: `Count: ${state.count}`
   })
 
+  const get = (): Function => {
+    let d = 0
+    return () => {
+      d += 1
+      console.log('D: ', d)
+    }
+  }
+
+  const getD = get()
+
   add('Total', ({ count }) => {
     if (element != null) {
       element.textContent = `Count: ${count}`
     }
+
+    getD()
   })
 
   return createComponent({
