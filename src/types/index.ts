@@ -1,4 +1,4 @@
-export type ChildElement = HTMLElement | HTMLElement[] | (() => HTMLElement | ChildElement | ChildElement[]) | null
+export type ChildElement = HTMLElement | HTMLElement[] | (() => HTMLElement | ChildElement | ChildElement[]) | null | DocumentFragment | DocumentFragment[]
 
 export interface IStateManager<T> {
   state: T
@@ -63,7 +63,6 @@ export type HTMLAllAttributes = (
   | TextareaAttributes
 )
 
-// Базовый интерфейс для общих атрибутов
 export interface HTMLAttributesBase {
   class?: string
   classes?: string[]
@@ -80,7 +79,6 @@ export interface HTMLAttributesBase {
   spellcheck?: boolean
 }
 
-// Интерфейс для тега <a> (гиперссылка)
 export interface AnchorAttributes extends HTMLAttributesBase {
   href?: string
   target?: '_blank' | '_self' | '_parent' | '_top'
@@ -89,7 +87,6 @@ export interface AnchorAttributes extends HTMLAttributesBase {
   type?: string
 }
 
-// Интерфейс для тега <img> (изображение)
 export interface ImageAttributes extends HTMLAttributesBase {
   src?: string
   alt?: string
@@ -98,7 +95,6 @@ export interface ImageAttributes extends HTMLAttributesBase {
   loading?: 'lazy' | 'eager'
 }
 
-// Интерфейс для тега <input> (поле ввода)
 export interface InputAttributes extends HTMLAttributesBase {
   type?: 'text' | 'password' | 'number' | 'checkbox' | 'radio' | 'submit' | 'reset' | 'file' | 'button' | 'date' | 'email' | 'url' | 'tel' | 'search' | 'color'
   name?: string
@@ -120,7 +116,6 @@ export interface InputAttributes extends HTMLAttributesBase {
   capture?: string
 }
 
-// Интерфейс для тега <form> (форма)
 export interface FormAttributes extends HTMLAttributesBase {
   action?: string
   method?: 'get' | 'post'
@@ -128,7 +123,6 @@ export interface FormAttributes extends HTMLAttributesBase {
   novalidate?: boolean
 }
 
-// Интерфейс для тега <button> (кнопка)
 export interface ButtonAttributes extends HTMLAttributesBase {
   type?: 'button' | 'submit' | 'reset'
   disabled?: boolean
@@ -143,12 +137,10 @@ export interface ButtonAttributes extends HTMLAttributesBase {
   value?: string
 }
 
-// Интерфейс для тега <label> (метка)
 export interface LabelAttributes extends HTMLAttributesBase {
   for?: string
 }
 
-// Интерфейс для тега <div> (блочный контейнер)
 export interface DivAttributes extends HTMLAttributesBase {
   role?: 'button' | 'tabpanel' | 'presentation' | 'none'
   ariaLabel?: string
@@ -156,7 +148,6 @@ export interface DivAttributes extends HTMLAttributesBase {
   ariaExpanded?: boolean
 }
 
-// Интерфейс для тега <video> (видео)
 export interface VideoAttributes extends HTMLAttributesBase {
   src?: string
   autoplay?: boolean
@@ -169,7 +160,6 @@ export interface VideoAttributes extends HTMLAttributesBase {
   height?: number
 }
 
-// Интерфейс для тега <audio> (аудио)
 export interface AudioAttributes extends HTMLAttributesBase {
   src?: string
   autoplay?: boolean
@@ -179,7 +169,6 @@ export interface AudioAttributes extends HTMLAttributesBase {
   preload?: 'none' | 'metadata' | 'auto'
 }
 
-// Интерфейс для тега <select> (выпадающий список)
 export interface SelectAttributes extends HTMLAttributesBase {
   name?: string
   multiple?: boolean
@@ -190,7 +179,6 @@ export interface SelectAttributes extends HTMLAttributesBase {
   form?: string
 }
 
-// Интерфейс для тега <option> (элемент выпадающего списка)
 export interface OptionAttributes extends HTMLAttributesBase {
   value?: string
   label?: string
@@ -198,7 +186,6 @@ export interface OptionAttributes extends HTMLAttributesBase {
   disabled?: boolean
 }
 
-// Интерфейс для тега <textarea> (многострочное текстовое поле)
 export interface TextareaAttributes extends HTMLAttributesBase {
   name?: string
   rows?: number
