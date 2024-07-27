@@ -1,12 +1,6 @@
-import { Observer, Writable } from '../types'
+import { Observer, StateReturn, Writable } from '../types'
 
-export function createState<T extends Record<string, any>> (initialState: T): {
-  get: () => T
-  set: (newState: Partial<T>) => void
-  add: (name: string, observer: Observer<T>) => void
-  remove: (name: string) => void
-  state: Writable<T>
-} {
+export function createState<T extends Record<string, any>> (initialState: T): StateReturn<T> {
   const state = new Proxy(initialState as Writable<T>, {
     set: (target, prop: string | symbol, value) => {
       if (typeof prop === 'string' && target[prop as keyof T] !== value) {
@@ -45,6 +39,8 @@ export function createState<T extends Record<string, any>> (initialState: T): {
 
   function notifyObservers (): void {
     observers.forEach(observer => observer(state as T))
+
+    console.log(observers)
   }
 
   return {
