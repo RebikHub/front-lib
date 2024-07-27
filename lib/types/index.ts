@@ -1,4 +1,4 @@
-export type ChildElement = HTMLElement | HTMLElement[] | (() => HTMLElement | ChildElement | ChildElement[]) | null
+export type ChildElement = HTMLElement | HTMLElement[] | (() => HTMLElement | ChildElement | ChildElement[]) | null | DocumentFragment | DocumentFragment[]
 
 export interface IStateManager<T> {
   state: T

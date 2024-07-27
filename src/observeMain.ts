@@ -1,7 +1,7 @@
 import './style.css'
 import javascriptLogo from '../public/javascript.svg'
 import viteLogo from '../public/vite.svg'
-import { createComponent, createState, initApp, observe } from '@lib/index'
+import { createComponent, createState, observe } from '@lib/index'
 import { ComponentOptions } from '@lib/types'
 
 interface initialState {
@@ -52,7 +52,7 @@ const CounterButton = (): HTMLElement => {
   })
 }
 
-const App = (): HTMLElement =>
+export const App = (): HTMLElement =>
   createComponent({
     children: [
       LinkImage({
@@ -82,5 +82,3 @@ const App = (): HTMLElement =>
       })
     ]
   })
-
-initApp('app', [App])

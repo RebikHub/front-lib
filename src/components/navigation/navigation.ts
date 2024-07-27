@@ -9,6 +9,10 @@ export function Navigation (): HTMLElement {
     class: 'navigation',
     children: [
       Button({
+        title: 'Switch',
+        onClick: () => navigate('/switch')
+      }),
+      Button({
         title: 'About',
         onClick: () => navigate('/about')
       }),

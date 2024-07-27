@@ -1,29 +1,29 @@
 
-import { createComponent } from '@lib/index'
-import { add, getUsers, StateMain } from '../modules'
+import { createComponent, observe } from '@lib/index'
+import { store, getUsers, StateMain } from '../modules'
 import { UsersList } from './components/users-list'
+import { ChildElement } from '@lib/types'
 
 export function Main (): HTMLElement {
-  const element = createComponent({ content: 'list users' })
-
-  add('Main', (state: StateMain) => {
-    element.textContent = state.loading
-      ? 'Loading...'
-      : state.error != null
-        ? state.error
-        : 'Users list'
-
-    if (!state.loading && (state.users != null)) {
-      const usersList = UsersList(state.users)
-      element.innerHTML = ''
-      element.appendChild(usersList)
+  const render = (state: StateMain): { content: string, children: ChildElement[] } => {
+    return {
+      content: state.loading
+        ? 'Loading...'
+        : state.error != null
+          ? state.error
+          : 'Users list',
+      children: (!state.loading && (state.users != null)) ? [UsersList(state.users)] : []
     }
-  })
+  }
 
   return createComponent({
     content: 'Home page',
     children: [
-      element,
+      observe({
+        store,
+        props: { content: 'list users' },
+        render
+      }),
       createComponent({
         tag: 'button',
         content: 'Get users',

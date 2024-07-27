@@ -79,9 +79,7 @@ export function observe<S, T extends keyof HTMLElementTagNameMap> ({
       return
     }
 
-    const prop = render(state)
-
-    update(element, prop)
+    update(element, render(state))
   })
 
   return element
@@ -114,11 +112,14 @@ export function update<T extends keyof HTMLElementTagNameMap> (element: HTMLElem
   if (props != null) {
     setElementAttributes(element, props)
   }
+  if (children.length > 0) {
+    render(children, element)
+  }
 
   return element
 }
 
-function renderInChunks (
+function render (
   children: ChildElement | ChildElement[],
   element: HTMLElement,
   chunkSize: number = 50
@@ -129,7 +130,7 @@ function renderInChunks (
   function enqueue (items: ChildElement | ChildElement[]): void {
     if (Array.isArray(items)) {
       items.forEach(item => enqueue(item))
-    } else if (items instanceof HTMLElement) {
+    } else if (items instanceof HTMLElement || items instanceof DocumentFragment) {
       queue.push(items)
     } else if (typeof items === 'function') {
       enqueue(items())
@@ -141,7 +142,7 @@ function renderInChunks (
   function processChunk (): void {
     const chunk = queue.splice(0, chunkSize)
     chunk.forEach(child => {
-      if (child instanceof HTMLElement) {
+      if (child instanceof HTMLElement || child instanceof DocumentFragment) {
         fragment.appendChild(child)
       }
     })
@@ -154,10 +155,6 @@ function renderInChunks (
   }
 
   requestAnimationFrame(processChunk)
-}
-
-function render (children: ChildElement | ChildElement[], element: HTMLElement): void {
-  renderInChunks(children, element)
 }
 
 export function initApp (parentId: string, children: ChildElement[] = []): void {
