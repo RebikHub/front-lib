@@ -1,9 +1,12 @@
 {
   "name": "crs-arch",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Components Router State",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "prepare": "npm run build"
