@@ -1,6 +1,6 @@
 {
   "name": "crs-arch",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Components Router State",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
