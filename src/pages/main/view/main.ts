@@ -19,7 +19,7 @@ export function Main (): HTMLElement {
   return createComponent({
     content: 'Home page',
     children: [
-      observe('Main', {
+      observe({
         store,
         props: { content: 'list users' },
         render

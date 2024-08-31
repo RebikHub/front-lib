@@ -4,8 +4,8 @@ export interface State {
   count: number
 }
 
-export const { set, state, add, remove } = createState<State>({ count: 0 })
+export const totalStore = createState<State>({ count: 0 })
 
-export const increment = (): void => set({ count: state.count - 1 })
+export const increment = (): void => totalStore.set({ count: totalStore.state.count - 1 })
 
-export const decrement = (): void => set({ count: state.count + 1 })
+export const decrement = (): void => totalStore.set({ count: totalStore.state.count + 1 })

@@ -2,7 +2,6 @@ import './style.css'
 import javascriptLogo from '../public/javascript.svg'
 import viteLogo from '../public/vite.svg'
 import { createComponent, createState, observe } from '@lib/index'
-import { ComponentOptions } from '@lib/types'
 
 interface initialState {
   count: number
@@ -12,28 +11,24 @@ const store = createState<initialState>({
   count: 0
 })
 
-const LinkImage = ({ href, className, alt, srcLogic }: any): HTMLElement => {
-  const props: ComponentOptions<'img'> = {
-    tag: 'img',
-    class: className,
-    alt,
-    src: srcLogic(store.state.count)
-  }
-  const render = (state: initialState): { src: string } => ({ src: srcLogic(state.count) })
+const LinkImage = ({ href, className, alt, srcLogic }: any): HTMLElement => createComponent({
+  tag: 'a',
+  href,
+  children: [observe({
+    store,
+    props: {
+      tag: 'img',
+      class: className,
+      alt,
+      src: srcLogic(store.state.count)
+    },
+    render: (state: initialState): { src: string } => ({ src: srcLogic(state.count) })
+  })]
+})
 
-  return createComponent({
-    tag: 'a',
-    href,
-    children: [observe({
-      store,
-      props,
-      render
-    })]
-  })
-}
-
-const CounterButton = (): HTMLElement => {
-  const props: ComponentOptions<'button'> = {
+const CounterButton = (): HTMLElement => observe({
+  store,
+  props: {
     tag: 'button',
     id: 'counter',
     type: 'button',
@@ -41,16 +36,9 @@ const CounterButton = (): HTMLElement => {
     events: {
       click: () => store.set({ count: store.state.count + 1 })
     }
-  }
-
-  const render = (state: initialState): { content: string } => ({ content: `count is ${state.count}` })
-
-  return observe({
-    store,
-    props,
-    render
-  })
-}
+  },
+  render: (state: initialState): { content: string } => ({ content: `count is ${state.count}` })
+})
 
 export const App = (): HTMLElement =>
   createComponent({

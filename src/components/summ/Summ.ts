@@ -1,18 +1,18 @@
-import { createComponent } from '@lib/index'
-import { add, state } from '@src/store'
+import { createComponent, observe } from '@lib/index'
+import { totalStore } from '@src/store'
 
 export function Summ (): HTMLElement {
-  const element = createComponent({
-    tag: 'h3',
-    content: `Summ ${state.count % 2 === 0 ? 'odd' : 'even'}`
-  })
-
-  add('Summ', ({ count }) => {
-    element.textContent = `Summ ${count % 2 === 0 ? 'odd' : 'even'}`
-  })
-
   return createComponent({
     content: 'Total summ',
-    children: [element]
+    children: [observe({
+      store: totalStore,
+      props: {
+        tag: 'h3',
+        content: `Summ ${totalStore.state.count % 2 === 0 ? 'odd' : 'even'}`
+      },
+      render: (state) => ({
+        content: `Summ ${state.count % 2 === 0 ? 'odd' : 'even'}`
+      })
+    })]
   })
 }

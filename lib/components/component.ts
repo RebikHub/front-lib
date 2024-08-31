@@ -1,4 +1,4 @@
-import { generateUUID } from '@lib/utils'
+import { generateUUID } from '../utils'
 import { ChildElement, ComponentOptions, HTMLAllAttributes, ObserveProps } from '../types'
 
 export function createComponent<T extends keyof HTMLElementTagNameMap> ({
