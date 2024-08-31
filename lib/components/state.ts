@@ -39,8 +39,6 @@ export function createState<T extends Record<string, any>> (initialState: T): St
 
   function notifyObservers (): void {
     observers.forEach(observer => observer(state as T))
-
-    console.log(observers)
   }
 
   return {

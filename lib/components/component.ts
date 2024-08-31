@@ -69,17 +69,43 @@ export function observe<S, T extends keyof HTMLElementTagNameMap> ({
   render
 }: ObserveProps<S, T>): HTMLElement {
   const element = createComponent(props)
+  const key = generateUUID()
 
-  const uuid = `${element.localName}-${generateUUID()}`
+  element.setAttribute('data-key', key)
 
-  store.add(uuid, (state) => {
+  store.add(key, (state) => {
     if (typeof render !== 'function') {
       console.error('Render is not a function:', render)
-
       return
     }
 
     update(element, render(state))
+  })
+
+  const mutationObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.removedNodes.forEach((node: Node) => {
+        if (node instanceof HTMLElement) {
+          const datakeyElements = node.querySelectorAll('[data-key]')
+          datakeyElements.forEach((item) => {
+            if (node instanceof HTMLElement && item.hasAttribute('data-key')) {
+              const nodeKey = item.getAttribute('data-key')
+              if (nodeKey === key) {
+                store.remove(key)
+                mutationObserver.disconnect()
+              }
+            }
+          })
+        }
+      })
+    })
+  })
+
+  mutationObserver.observe(document.body, {
+    childList: true,
+    attributes: true,
+    attributeFilter: ['data-key'],
+    subtree: true
   })
 
   return element
