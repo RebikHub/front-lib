@@ -1,7 +1,7 @@
 import { generateUUID } from '../utils'
 import { ChildElement, ComponentOptions, HTMLAllAttributes, ObserveProps } from '../types'
 
-export function createComponent<T extends keyof HTMLElementTagNameMap> ({
+export function createComponent<T extends keyof HTMLElementTagNameMap>({
   tag = 'div' as T,
   content = '',
   children = [],
@@ -25,7 +25,7 @@ export function createComponent<T extends keyof HTMLElementTagNameMap> ({
   return element
 }
 
-function setElementClasses (element: HTMLElement, props: HTMLAllAttributes): void {
+function setElementClasses(element: HTMLElement, props: HTMLAllAttributes): void {
   if (props.class != null && typeof props.class === 'string') {
     element.className = props.class.trim()
   }
@@ -34,7 +34,7 @@ function setElementClasses (element: HTMLElement, props: HTMLAllAttributes): voi
   }
 }
 
-function setElementAttributes (element: HTMLElement, props: HTMLAllAttributes): void {
+function setElementAttributes(element: HTMLElement, props: HTMLAllAttributes): void {
   Object.keys(props).forEach((key) => {
     const typedKey = key.trim() as keyof HTMLAllAttributes
     const value = props[typedKey]
@@ -51,7 +51,7 @@ function setElementAttributes (element: HTMLElement, props: HTMLAllAttributes): 
   })
 }
 
-function setElementEvents (element: HTMLElement, events: { [key: string]: EventListener } | undefined): void {
+function setElementEvents(element: HTMLElement, events: { [key: string]: EventListener } | undefined): void {
   if (events != null) {
     Object.keys(events).forEach((key) => {
       const typedKey = key as keyof GlobalEventHandlersEventMap
@@ -63,29 +63,55 @@ function setElementEvents (element: HTMLElement, events: { [key: string]: EventL
   }
 }
 
-export function observe<S, T extends keyof HTMLElementTagNameMap> ({
+export function observe<S, T extends keyof HTMLElementTagNameMap>({
   store,
   props,
   render
 }: ObserveProps<S, T>): HTMLElement {
   const element = createComponent(props)
+  const key = generateUUID()
 
-  const uuid = `${element.localName}-${generateUUID()}`
+  element.setAttribute('data-key', key)
 
-  store.add(uuid, (state) => {
+  store.add(key, (state) => {
     if (typeof render !== 'function') {
       console.error('Render is not a function:', render)
-
       return
     }
 
     update(element, render(state))
   })
 
+  const mutationObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.removedNodes.forEach((node: Node) => {
+        if (node instanceof HTMLElement) {
+          const datakeyElements = node.querySelectorAll('[data-key]')
+          datakeyElements.forEach((item) => {
+            if (node instanceof HTMLElement && item.hasAttribute('data-key')) {
+              const nodeKey = item.getAttribute('data-key')
+              if (nodeKey === key) {
+                store.remove(key)
+                mutationObserver.disconnect()
+              }
+            }
+          })
+        }
+      })
+    })
+  })
+
+  mutationObserver.observe(document.body, {
+    childList: true,
+    attributes: true,
+    attributeFilter: ['data-key'],
+    subtree: true
+  })
+
   return element
 }
 
-export function update<T extends keyof HTMLElementTagNameMap> (element: HTMLElement, {
+export function update<T extends keyof HTMLElementTagNameMap>(element: HTMLElement, {
   tag = 'div' as T,
   content = '',
   children = [],
@@ -119,7 +145,7 @@ export function update<T extends keyof HTMLElementTagNameMap> (element: HTMLElem
   return element
 }
 
-function render (
+function render(
   children: ChildElement | ChildElement[],
   element: HTMLElement,
   chunkSize: number = 50
@@ -127,7 +153,7 @@ function render (
   const fragment = document.createDocumentFragment()
   const queue: ChildElement[] = []
 
-  function enqueue (items: ChildElement | ChildElement[]): void {
+  function enqueue(items: ChildElement | ChildElement[]): void {
     if (Array.isArray(items)) {
       items.forEach(item => enqueue(item))
     } else if (items instanceof HTMLElement || items instanceof DocumentFragment) {
@@ -139,7 +165,7 @@ function render (
 
   enqueue(children)
 
-  function processChunk (): void {
+  function processChunk(): void {
     const chunk = queue.splice(0, chunkSize)
     chunk.forEach(child => {
       if (child instanceof HTMLElement || child instanceof DocumentFragment) {
@@ -157,7 +183,7 @@ function render (
   requestAnimationFrame(processChunk)
 }
 
-export function initApp (parentId: string, children: ChildElement[] = []): void {
+export function initApp(parentId: string, children: ChildElement[] = []): void {
   const app = document.getElementById(parentId)
 
   if (app instanceof HTMLElement) {
