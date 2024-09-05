@@ -1,5 +1,6 @@
 import { generateUUID } from '../utils'
 import { ChildElement, ComponentOptions, HTMLAllAttributes, ObserveProps } from '../types'
+import { createMutationObserver } from './observer'
 
 export function createComponent<T extends keyof HTMLElementTagNameMap>({
   tag = 'div' as T,
@@ -82,31 +83,8 @@ export function observe<S, T extends keyof HTMLElementTagNameMap>({
     update(element, render(state))
   })
 
-  const mutationObserver = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      mutation.removedNodes.forEach((node: Node) => {
-        if (node instanceof HTMLElement) {
-          const datakeyElements = node.querySelectorAll('[data-key]')
-          datakeyElements.forEach((item) => {
-            if (node instanceof HTMLElement && item.hasAttribute('data-key')) {
-              const nodeKey = item.getAttribute('data-key')
-              if (nodeKey === key) {
-                store.remove(key)
-                mutationObserver.disconnect()
-              }
-            }
-          })
-        }
-      })
-    })
-  })
-
-  mutationObserver.observe(document.body, {
-    childList: true,
-    attributes: true,
-    attributeFilter: ['data-key'],
-    subtree: true
-  })
+  const observerManager = createMutationObserver(key, store)
+  observerManager.observe(document.body)
 
   return element
 }
