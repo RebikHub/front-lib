@@ -1,4 +1,4 @@
-import { StateReturn } from '@lib/types'
+import { StateReturn } from "../types"
 
 export const createMutationObserver = <S>(key: string, store: StateReturn<S>): {
   observe: (target: Node) => void
