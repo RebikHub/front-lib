@@ -1,6 +1,6 @@
 import { Observer, StateReturn, Writable } from '../types'
 
-export function createState<T extends Record<string, any>> (initialState: T): StateReturn<T> {
+export function createState<T extends Record<string, any>>(initialState: T): StateReturn<T> {
   const state = new Proxy(initialState as Writable<T>, {
     set: (target, prop: string | symbol, value) => {
       if (typeof prop === 'string' && target[prop as keyof T] !== value) {
@@ -12,11 +12,11 @@ export function createState<T extends Record<string, any>> (initialState: T): St
 
   const observers: Map<string, Observer<T>> = new Map()
 
-  function get (): T {
+  function get(): T {
     return state as T
   }
 
-  function set (newState: Partial<T>): void {
+  function set(newState: Partial<T>): void {
     let hasChanged = false
     for (const key in newState) {
       if (newState[key] !== state[key as keyof T]) {
@@ -29,15 +29,15 @@ export function createState<T extends Record<string, any>> (initialState: T): St
     }
   }
 
-  function add (name: string, observer: Observer<T>): void {
+  function add(name: string, observer: Observer<T>): void {
     observers.set(name, observer)
   }
 
-  function remove (name: string): void {
+  function remove(name: string): void {
     observers.delete(name)
   }
 
-  function notifyObservers (): void {
+  function notifyObservers(): void {
     observers.forEach(observer => observer(state as T))
   }
 
