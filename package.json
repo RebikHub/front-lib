@@ -1,6 +1,6 @@
 {
   "name": "crs-arch",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Components Router State",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -11,10 +11,15 @@
     "build": "tsc",
     "prepare": "npm run build"
   },
-  "keywords": ["interface", "components", "router", "state"],
+  "keywords": [
+    "interface",
+    "components",
+    "router",
+    "state"
+  ],
   "author": "RebikHub",
   "license": "MIT",
-    "repository": {
+  "repository": {
     "type": "git",
     "url": "https://github.com/RebikHub/front-lib.git"
   },
